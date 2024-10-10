@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>C&K Media Marketing - Marketing Done Right</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <style>
+      :root {
+        --gold: #c7a23b; /* Glossy gold */
+        --gold-hover: #c7a23b; /* Lighter shade for hover */
+        --dark-bg: #010101;
+        --section-bg: rgba(1, 1, 1, 0.8); /* Opaque black with 80% opacity */
+        --item-bg: #222222;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: var(--dark-bg);
+        color: var(--gold);
+        overflow: hidden; /* Prevent scrolling while loading */
+      }
+
+      .loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--dark-bg);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999; /* Ensure it is on top of all content */
+        opacity: 1;
+        transition: opacity 0.5s ease-out;
+      }
+
+      .loading .logo {
+        width: 100px; /* Adjust the width to make the logo larger */
+        height: auto;
+        animation: spin 2s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Background spinning circles */
+      .spinning-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: -1; /* Behind all other content */
+      }
+
+      .spinning-background .circle {
+        position: absolute;
+        border-radius: 50%;
+        background-color: var(--gold);
+        opacity: 0.2; /* Low opacity for subtle effect */
+        animation: spin-slow infinite linear;
+      }
+
+      .circle1 {
+        width: 300px;
+        height: 300px;
+        top: 20%;
+        left: 15%;
+        animation-duration: 20s;
+      }
+
+      .circle2 {
+        width: 200px;
+        height: 200px;
+        top: 40%;
+        left: 70%;
+        animation-duration: 25s;
+      }
+
+      .circle3 {
+        width: 400px;
+        height: 400px;
+        bottom: 20%;
+        left: 50%;
+        animation-duration: 30s;
+      }
+
+      @keyframes spin-slow {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      header {
+        background-color: var(--section-bg);
+        padding: 20px 0;
+        border-bottom: 2px solid var(--gold); /* Slim gold bar at the bottom */
+      }
+
+      .logo {
+        width: 200px;
+        height: auto;
+      }
+
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      nav ul {
+        list-style-type: none;
+        padding: 0;
+      }
+
+      nav ul li {
+        display: inline;
+        margin-left: 20px;
+      }
+
+      nav ul li a {
+        color: var(--gold);
+        text-decoration: none;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        padding: 5px 10px;
+      }
+
+      nav ul li a:hover {
+        color: var(--dark-bg);
+        background-color: var(--gold-hover);
+        transform: scale(1.1);
+        border-radius: 5px;
+      }
+
+      .hero {
+        background-color: var(--section-bg);
+        padding: 100px 0;
+        text-align: center;
+      }
+
+      .hero h1 {
+        font-size: 3em;
+        margin-bottom: 20px;
+      }
+
+      .cta-button {
+        display: inline-block;
+        background-color: var(--gold);
+        color: var(--dark-bg);
+        padding: 10px 20px;
+        text-decoration: none;
+        font-weight: bold;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+      }
+
+      .cta-button:hover {
+        background-color: var(--gold-hover);
+        transform: scale(1.1);
+      }
+
+      .services,
+      .testimonials,
+      .about-us,
+      .latest-news,
+      .contact {
+        padding: 50px 0;
+        background-color: var(--section-bg);
+      }
+
+      .service-grid,
+      .testimonial-grid,
+      .news-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      }
+
+      .service-item,
+      .testimonial-item,
+      .news-item {
+        background-color: var(--item-bg);
+        padding: 20px;
+        border-radius: 5px;
+        text-align: center;
+      }
+
+      footer {
+        background-color: var(--section-bg);
+        text-align: center;
+        padding: 20px 0;
+      }
+
+      footer p {
+        margin: 10px 0;
+      }
+
+      .page {
+        display: none;
+      }
+
+      .page.active {
+        display: block;
+      }
+
+      /* AOS animations */
+      .aos-animate {
+        opacity: 1;
+      }
+
+      .aos-init {
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+
+      .contact form {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: var(--item-bg);
+        padding: 20px;
+        border-radius: 5px;
+      }
+
+      .contact form input,
+      .contact form textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #333;
+        color: var(--gold);
+      }
+
+      .contact form input[type="submit"] {
+        background-color: var(--gold);
+        color: var(--dark-bg);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .contact form input[type="submit"]:hover {
+        background-color: var(--gold-hover);
+        transform: scale(1.1);
+      }
+      .loading-indicator {
+        display: none;
+        text-align: center;
+        margin-top: 10px;
+        color: var(--gold); /* Ensure text color matches */
+        font-weight: bold;
+      }
+
+      .loading-indicator.success {
+        color: var(--gold); /* Match text color with other elements */
+      }
+
+      .video-container {
+        margin-top: 30px;
+        width: 880px; /* Set the width to match the video */
+        height: 500px; /* Set the height to match the video */
+        border: 5px solid var(--gold); /* Gold border */
+        border-radius: 10px; /* Optional: Rounded corners */
+        overflow: hidden; /* Ensure the border radius applies to the iframe */
+        margin-left: auto; /* Center horizontally */
+        margin-right: auto; /* Center horizontally */
+        position: relative; /* For proper placement of the iframe */
+      }
+
+      .video-container iframe {
+        width: 100%;
+        height: 100%;
+        border: none; /* Remove default border from iframe */
+        display: block;
+      }
+
+      @keyframes ellipsis {
+        0% {
+          content: "Sending";
+        }
+        33% {
+          content: "Sending.";
+        }
+        66% {
+          content: "Sending..";
+        }
+        100% {
+          content: "Sending...";
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="spinning-background">
+      <div class="circle circle1"></div>
+      <div class="circle circle2"></div>
+      <div class="circle circle3"></div>
+    </div>
+
+    <!-- Loading Page -->
+    <div class="loading">
+      <img
+        src="images/image22.jpg"
+        alt="C&K Media Marketing Logo"
+        class="logo"
+      />
+    </div>
+
+    <header>
+      <div class="container">
+        <nav>
+          <a href="#" onclick="showPage('home')">
+            <img
+              src="images/logo.jpg"
+              alt="C&K Media Marketing Logo"
+              class="logo"
+            />
+          </a>
+          <ul>
+            <li><a onclick="showPage('home')">Home</a></li>
+            <li><a onclick="showPage('services')">Services</a></li>
+            <li><a onclick="showPage('about')">About</a></li>
+            <li><a onclick="showPage('testimonials')">Testimonials</a></li>
+            <li><a onclick="showPage('contact')">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div id="home" class="page active">
+        <section class="hero" data-aos="fade-up">
+          <div class="container">
+            <h1>Marketing Done Right</h1>
+            <p>Elevate your brand with C&K Media Marketing</p>
+            <a href="#" class="cta-button" onclick="showPage('contact')"
+              >Get Started</a
+            >
+
+            <!-- YouTube Video Embed -->
+            <div class="video-container" style="margin-top: 30px">
+              <iframe
+                width="950"
+                height="500"
+                src="https://www.youtube.com/embed/8EL2T4unSYw?si=R_2uIxjmyJ5Bxg1O"
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+              ></iframe>
+            </div>
+          </div>
+        </section>
+
+        <section class="services" data-aos="fade-up">
+          <div class="container">
+            <h2>Our Services</h2>
+            <div class="service-grid">
+              <div class="service-item">
+                <h3>Digital Real Estate Marketing</h3>
+                <p>
+                  The bread and butter of our company. We do real estate
+                  marketing like no other.
+                </p>
+              </div>
+              <div class="service-item">
+                <h3>Content Creation</h3>
+                <p>_______________</p>
+              </div>
+              <div class="service-item">
+                <h3>Brand Strategy</h3>
+                <p>_______________</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="about-us" data-aos="fade-up">
+          <div class="container">
+            <h2>About Us</h2>
+            <p>Born out of the minds of two young entrepeneurs,...</p>
+          </div>
+        </section>
+
+        <section class="latest-news" data-aos="fade-up">
+          <div class="container">
+            <h2>Latest News</h2>
+            <div class="news-grid">
+              <div class="news-item">
+                <h3>News Title 1</h3>
+                <p>Short description of the news item or blog post.</p>
+              </div>
+              <div class="news-item">
+                <h3>News Title 2</h3>
+                <p>Short description of the news item or blog post.</p>
+              </div>
+              <div class="news-item">
+                <h3>News Title 3</h3>
+                <p>Short description of the news item or blog post.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div id="services" class="page">
+        <section class="services" data-aos="fade-up">
+          <div class="container">
+            <h2>Our Services</h2>
+            <div class="service-grid">
+              <div class="service-item">
+                <h3>Digital Marketing</h3>
+                <p>Comprehensive online strategies to boost your presence</p>
+              </div>
+              <div class="service-item">
+                <h3>Content Creation</h3>
+                <p>Engaging content that resonates with your audience</p>
+              </div>
+              <div class="service-item">
+                <h3>Brand Strategy</h3>
+                <p>Develop a unique identity that sets you apart</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div id="about" class="page">
+        <section class="about-us" data-aos="fade-up">
+          <div class="container">
+            <h2>About Us</h2>
+            <p>
+              C&K Media Marketing is a forward-thinking agency dedicated to
+              helping businesses thrive in the digital age. With our innovative
+              strategies and creative solutions, we've helped countless clients
+              achieve their marketing goals.
+            </p>
+          </div>
+        </section>
+      </div>
+
+      <div id="testimonials" class="page">
+        <section class="testimonials" data-aos="fade-up">
+          <div class="container">
+            <h2>What Our Clients Say</h2>
+            <div class="testimonial-grid">
+              <div class="testimonial-item">
+                <p>
+                  "The team at C&K Media Marketing transformed our brand and
+                  significantly increased our online presence."
+                </p>
+                <cite>- Client Name</cite>
+              </div>
+              <div class="testimonial-item">
+                <p>
+                  "Exceptional service and results! Highly recommend for anyone
+                  looking to elevate their marketing."
+                </p>
+                <cite>- Client Name</cite>
+              </div>
+              <div class="testimonial-item">
+                <p>
+                  "Professional, creative, and effective. Our business has seen
+                  tremendous growth thanks to their efforts."
+                </p>
+                <cite>- Client Name</cite>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div id="contact" class="page">
+        <section class="contact" data-aos="fade-up">
+          <div class="container">
+            <h2>Contact Us</h2>
+            <form id="contact-form">
+              <input
+                type="text"
+                name="company"
+                id="company"
+                placeholder="Your Company Name"
+              />
+              <input
+                type="text"
+                name="name"
+                id="name"
+                placeholder="Your Name"
+                required
+              />
+              <input
+                type="email"
+                name="email"
+                id="email"
+                placeholder="Your email address"
+                required
+              />
+              <textarea
+                name="message"
+                id="message"
+                placeholder="Your message"
+                required
+              ></textarea>
+              <input type="submit" value="Send Message" id="submit-button" />
+              <div class="loading-indicator" id="loading-indicator"></div>
+            </form>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <div class="container">
+        <p>&copy; 2024 C&K Media Marketing. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+      AOS.init();
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // Hide loading screen
+        setTimeout(function () {
+          document.querySelector(".loading").style.display = "none";
+          document.body.style.overflow = "auto"; // Re-enable scrolling
+        }, 500);
+
+        // EmailJS initialization
+        emailjs.init("FAryzKuKqCF2QX6ru");
+
+        // Form submission
+        document
+          .getElementById("contact-form")
+          .addEventListener("submit", function (event) {
+            event.preventDefault();
+            console.log("Form submitted");
+
+            const form = event.target;
+            const submitButton = document.getElementById("submit-button");
+            const loadingIndicator =
+              document.getElementById("loading-indicator");
+
+            // Disable submit button and show loading indicator
+            submitButton.disabled = true;
+            loadingIndicator.style.display = "block";
+
+            // Prepare the template parameters
+            const templateParams = {
+              company_name: form.elements.company.value,
+              from_name: form.elements.name.value,
+              message: form.elements.message.value,
+              reply_to: form.elements.email.value,
+            };
+
+            emailjs
+              .send("service_iw8xe9f", "template_ja2xrwn", templateParams)
+              .then(
+                function (response) {
+                  console.log("SUCCESS!", response.status, response.text);
+                  alert("Message sent successfully!");
+                  form.reset();
+                },
+                function (error) {
+                  console.log("FAILED...", error);
+                  alert(
+                    "Failed to send message. Error: " + JSON.stringify(error)
+                  );
+                }
+              )
+              .finally(function () {
+                // Re-enable submit button and hide loading indicator
+                submitButton.disabled = false;
+                loadingIndicator.style.display = "none";
+              });
+          });
+      });
+
+      function showPage(pageId) {
+        document.querySelectorAll(".page").forEach(function (page) {
+          page.classList.remove("active");
+        });
+        document.getElementById(pageId).classList.add("active");
+      }
+    </script>
+  </body>
+</html>
